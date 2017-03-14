@@ -7,6 +7,9 @@ class MessagesController < ApplicationController
 
   def create
     @message = current_user.messages.create! body: params[:message][:body]
-    redirect_to messages_path
+    ActionCable.server.broadcast "messages", render(
+      partial: 'messages/message',
+      object: @message
+    )
   end
 end
